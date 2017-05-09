@@ -10,9 +10,9 @@ const debug = require('debug')('kuso:sheets')
  * https://docs.google.com/spreadsheets/d/1fLV92M8zCoGlQUb_bzPZO2tAJul1X9S4onLcnUq3d2M/edit
  *
  * @param {google.auth.OAuth2} auth - A pre-credentialed oauth client
- * @param {String} book - The name of the book in the spreadsheet
- * @param {String} range - The range of columns to load
- * @returns {Array} - An array of event Objects
+ * @param {String} [book] - The name of the book in the spreadsheet
+ * @param {String} [range] - The range of columns to load
+ * @returns {Promise.<Array>} - An array of event Objects
  *
  */
 exports.get_daily_schedule = (auth, book, range) => {
@@ -35,7 +35,7 @@ exports.get_daily_schedule = (auth, book, range) => {
 
       if (err) {
         debug('The API returned an error: ' + err);
-        return reject();
+        return reject(err);
       }
 
       response.values.forEach((row) => {

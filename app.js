@@ -1,24 +1,32 @@
 const body_parser = require('body-parser')
     , express = require('express')
     , logger = require('morgan')
+    , swaggerJSDoc = require('swagger-jsdoc')
 
     , app = express()
-    , api = require('./src/api')
-    , auth = require('./src/auth')
     ;
 
 module.exports = app;
 
+// Initialize swagger-jsdoc -> returns validated swagger spec in json format
+var swaggerSpec = swaggerJSDoc({
+  swaggerDefinition: {
+    info: {
+      title: 'Kuso Services', // Title (required)
+      version: '1.0.0', // Version (required)
+    },
+  },
+  apis: ['./src/*.js'], // Path to the API docs
+});
+
 app.use(logger('dev'));
 app.use(body_parser.json());
 
-// authentication
-app.use(auth.check_auth);
-
 // routes
 app.get('/', (req, res) => {res.json({hello: "world"});});
-app.use('/auth', auth.router);
-app.use('/api/v1', api);
+app.get('/api-docs.json', (req, res) => { res.json(swaggerSpec); });
+app.use('/auth', require('./src/auth').router);
+app.use('/api/v1', require('./src/api'));
 
 // error handling middleware
 app.use(handle404);
