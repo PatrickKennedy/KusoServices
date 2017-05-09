@@ -6,6 +6,7 @@
   "author": "Patrick Kennedy <pakattack161@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "assignment": "^2.2.1",
     "body-parser": "^1.17.1",
     "debug": "^2.6.6",
     "express": "^4.15.2",
@@ -14,7 +15,8 @@
     "js-yaml": "^3.8.3",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
-    "morgan": "^1.8.1"
+    "morgan": "^1.8.1",
+    "swagger-jsdoc": "^1.9.4"
   },
   "devDependencies": {
     "jshint": "^2.9.4"
