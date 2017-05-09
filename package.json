@@ -1,0 +1,28 @@
+{
+  "name": "kuso-services",
+  "version": "1.0.0",
+  "description": "A bot for the Kusogrande Discord channel",
+  "main": "server.js",
+  "author": "Patrick Kennedy <pakattack161@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "debug": "^2.6.6",
+    "express": "^4.15.2",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^19.0.0",
+    "js-yaml": "^3.8.3",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "morgan": "^1.8.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.4"
+  },
+  "scripts": {
+    "lint": "jshint ./",
+    "start": "docker-compose up",
+    "build:js": "yarn run lint",
+    "build": "yarn run build:js && docker-compose build"
+  }
+}

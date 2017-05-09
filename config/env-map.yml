@@ -1,0 +1,11 @@
+express:
+  port: EXPRESS_PORT
+
+schedule:
+  sheet_id: SCHEDULE_SHEET_ID
+  book: SCHEDULE_BOOK
+
+google_apis:
+  client_id: SHEETS_CLIENT_ID
+  client_secret: SHEETS_CLIENT_SECRET
+  project_id: SHEETS_PROJECT_ID

@@ -1,0 +1,13 @@
+version: '3'
+services:
+  services:
+    build: ./
+    image: kuso-services
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    
+networks:
+  default:
+    external:
+      name: kuso
