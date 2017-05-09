@@ -2,30 +2,28 @@ const fs = require('fs');
 const assignment = require('assignment');
 const yaml = require('js-yaml');
 
-// Load basic config options
-try {
+// load basic config options
+if (fs.existsSync('./config/common.yml'))
   var common = yaml.safeLoad(fs.readFileSync('./config/common.yml', 'utf8'));
-} catch (e) { console.log(e); }
 
-// Load config options specific to environments but not secret
-try {
-  let env = process.env.NODE_ENV || "development";
+// load config options specific to environments but not secret
+let env = process.env.NODE_ENV || "development";
+if (fs.existsSync(`./config/${env}.yml`))
   var config = yaml.safeLoad(fs.readFileSync(`./config/${env}.yml`, 'utf8'));
-} catch (e) { console.log(e); }
 
-
-// Load local overwrites - not commited to git
-try {
+// load local overwrites - not commited to git
+if (fs.existsSync('./config/local.yml'))
   var local = yaml.safeLoad(fs.readFileSync('./config/local.yml', 'utf8'));
-} catch (e) { console.log(e); }
+
+// combine config files - local > env config > common
+config = module.exports = assignment({}, common, config, local);
 
 
-// Load environment variable mappings
+// load environment variable mappings
 try {
   var env_map = yaml.safeLoad(fs.readFileSync('./config/env-map.yml', 'utf8'));
 } catch (e) { console.log(e); }
 
-config = module.exports = assignment({}, common, config, local);
 
 // traverse an object tree an run a callback on each leaf node
 // http://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript
