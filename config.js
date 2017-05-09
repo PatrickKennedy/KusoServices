@@ -1,5 +1,6 @@
-const yaml = require('js-yaml');
 const fs = require('fs');
+const assignment = require('assignment');
+const yaml = require('js-yaml');
 
 // Load basic config options
 try {
@@ -8,7 +9,7 @@ try {
 
 // Load config options specific to environments but not secret
 try {
-  let env = process.env.NODE_ENV || "dev";
+  let env = process.env.NODE_ENV || "development";
   var config = yaml.safeLoad(fs.readFileSync(`./config/${env}.yml`, 'utf8'));
 } catch (e) { console.log(e); }
 
@@ -24,7 +25,7 @@ try {
   var env_map = yaml.safeLoad(fs.readFileSync('./config/env-map.yml', 'utf8'));
 } catch (e) { console.log(e); }
 
-config = module.exports = Object.assign({}, common, config, local);
+config = module.exports = assignment({}, common, config, local);
 
 // traverse an object tree an run a callback on each leaf node
 function traverse (obj, callback, trail) {
