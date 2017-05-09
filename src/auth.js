@@ -20,9 +20,9 @@ const debug = require('debug')('kuso:index')
     ;
 
 /**
- * @desc: checks that the token for the Google Sheets API exists
+ * @desc: initialize the oauth2 client and move on
  */
-exports.check_auth = (req, res, next) => {
+let init_auth_client = exports.init_auth_client = (req, res, next) => {
   let clientSecret = config.google_apis.client_secret
     , clientId = config.google_apis.client_id
     , redirectUrl = config.google_apis.redirect_uris[0]
@@ -30,16 +30,21 @@ exports.check_auth = (req, res, next) => {
     , oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl)
     ;
 
+  res.locals.auth = oauth2Client;
+  next();
+};
+
+
+/**
+ * @desc: checks that the token for the Google Sheets API exists
+ */
+let check_auth = exports.check_auth = (req, res, next) => {
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
-    res.locals.auth = oauth2Client;
-    if (req.path == "/auth")
-      return next();
-
     if (err)
       return res.redirect("/auth");
 
-    oauth2Client.credentials = JSON.parse(token);
+    res.locals.auth.credentials = JSON.parse(token);
     next();
   });
 };
@@ -57,7 +62,7 @@ router.route('/')
    *      200:
    *        description: a json response containing the auth_url to follow
    */
-  .get((req, res, next) => {
+  .get(init_auth_client, (req, res, next) => {
     let auth_url = res.locals.auth.generateAuthUrl({
       access_type: 'offline',
       scope: SCOPES,
@@ -84,7 +89,7 @@ router.route('/')
    *      500:
    *        description: An error occured while generating the token
    */
-  .post((req, res, next) => {
+  .post(init_auth_client, (req, res, next) => {
     let handle_token = (err, token) => {
       if (err)
         return res.status(500)

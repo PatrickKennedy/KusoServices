@@ -4,8 +4,6 @@ const body_parser = require('body-parser')
     , swaggerJSDoc = require('swagger-jsdoc')
 
     , app = express()
-    , api = require('./src/api')
-    , auth = require('./src/auth')
     ;
 
 module.exports = app;
@@ -24,14 +22,11 @@ var swaggerSpec = swaggerJSDoc({
 app.use(logger('dev'));
 app.use(body_parser.json());
 
-// authentication
-app.use(auth.check_auth);
-
 // routes
 app.get('/', (req, res) => {res.json({hello: "world"});});
 app.get('/api-docs.json', (req, res) => { res.json(swaggerSpec); });
-app.use('/auth', auth.router);
-app.use('/api/v1', api);
+app.use('/auth', require('./src/auth').router);
+app.use('/api/v1', require('./src/api'));
 
 // error handling middleware
 app.use(handle404);

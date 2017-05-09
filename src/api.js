@@ -1,8 +1,9 @@
-let debug = require('debug')('kuso:api')
+let debug   = require('debug')('kuso:api')
   , express = require('express')
-  , router = express.Router()
+  , router  = express.Router()
 
-  , sheets = require('./sheets')
+  , sheets  = require('./sheets')
+  , perms   = require('./permissions')
   ;
 
 module.exports = router;
@@ -14,7 +15,7 @@ router
   /*
    * API Documentation
    */
-  .get('/', (req, res, next) => { res.redirect('/api-docs.json'); })
+  .get('/', perms.unprotected, (req, res, next) => { res.redirect('/api-docs.json'); })
 
   /**
    * @swagger
@@ -27,7 +28,7 @@ router
    *      200:
    *        description: successfully processed spreadsheet
    */
-  .get('/upcoming', (req, res, next) => {
+  .get('/upcoming', perms.protected, (req, res, next) => {
     sheets.get_daily_schedule(res.locals.auth, 'Upcoming Matches')
       .then(
         (results) => { res.json(results); },
@@ -46,7 +47,7 @@ router
    *      200:
    *        description: successfully processed spreadsheet
    */
-  .get('/past', (req, res, next) => {
+  .get('/past', perms.protected, (req, res, next) => {
     sheets.get_daily_schedule(res.locals.auth, 'Past Matches')
       .then(
         (results) => { res.json(results); },
