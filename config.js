@@ -63,9 +63,9 @@ Object.setByPath = function(path, obj, value) {
 // replace config values with the envrionment key configured in env-map.yml
 traverse(config, (key, value, trail) => {
   // concat pushes values passed in and returns a new array
-  path = trail.concat(key);
-  let env_key = Object.resolve(path, env_map);
-  let env_value = process.env[env_key];
+  let path = trail.concat(key)
+    , env_key = Object.resolve(path, env_map)
+    , env_value = process.env[env_key];
   if (typeof env_value === "undefined")
     return;
 
