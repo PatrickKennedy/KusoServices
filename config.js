@@ -28,18 +28,20 @@ try {
 config = module.exports = assignment({}, common, config, local);
 
 // traverse an object tree an run a callback on each leaf node
+// http://stackoverflow.com/questions/722668/traverse-all-the-nodes-of-a-json-object-tree-with-javascript
 function traverse (obj, callback, trail) {
-  trail = trail || []
+  trail = trail || [];
 
   Object.keys(obj).forEach(function (key) {
-    var value = obj[key]
+    let value = obj[key]
+      , undef = typeof value === "undefined" || value === null
+      ;
 
-    if (Object.getPrototypeOf(value) === Object.prototype) {
-      traverse(value, callback, trail.concat(key))
-    } else {
-      callback.call(obj, key, value, trail)
-    }
-  })
+    if (!undef && Object.getPrototypeOf(value) === Object.prototype)
+      traverse(value, callback, trail.concat(key));
+    else
+      callback.call(obj, key, value, trail);
+  });
 }
 
 // ala http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
