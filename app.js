@@ -1,6 +1,7 @@
 const body_parser = require('body-parser')
     , express = require('express')
     , logger = require('morgan')
+    , swaggerJSDoc = require('swagger-jsdoc')
 
     , app = express()
     , api = require('./src/api')
@@ -8,6 +9,17 @@ const body_parser = require('body-parser')
     ;
 
 module.exports = app;
+
+// Initialize swagger-jsdoc -> returns validated swagger spec in json format
+var swaggerSpec = swaggerJSDoc({
+  swaggerDefinition: {
+    info: {
+      title: 'Kuso Services', // Title (required)
+      version: '1.0.0', // Version (required)
+    },
+  },
+  apis: ['./src/api.js'], // Path to the API docs
+});
 
 app.use(logger('dev'));
 app.use(body_parser.json());
@@ -17,6 +29,7 @@ app.use(auth.check_auth);
 
 // routes
 app.get('/', (req, res) => {res.json({hello: "world"});});
+app.get('/api-docs.json', (req, res) => { res.json(swaggerSpec); });
 app.use('/auth', auth.router);
 app.use('/api/v1', api);
 
