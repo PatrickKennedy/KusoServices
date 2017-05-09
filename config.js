@@ -43,17 +43,17 @@ function traverse (obj, callback, trail) {
 }
 
 // ala http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
-// resolve "obj.path.to.value" into the nested value of on the object
-Object.resolve = function(trail, obj) {
-    return trail.reduce(function(prev, curr) {
+// resolve ['path', 'to', 'value'] into the nested value of on the object
+Object.resolve = function(path, obj) {
+    return path.reduce(function(prev, curr) {
         return prev ? prev[curr] : undefined
-    }, obj || self)
+    }, obj)
 }
 
-// like the above, set "obj.path.to.value" on a nested object
-Object.setByPath = function(trail, obj, value) {
-  return trail.reduce(function(prev, curr, ix) {
-    return (ix + 1 == parts.length)
+// like the above, set ['path', 'to', 'value'] on a nested object
+Object.setByPath = function(path, obj, value) {
+  return path.reduce(function(prev, curr, ix) {
+    return (ix + 1 == path.length)
       ? prev[curr] = value
       : prev[curr] = prev[curr] || {};
   }, obj);
@@ -62,10 +62,12 @@ Object.setByPath = function(trail, obj, value) {
 // Process the environment variable mapping - Traverse the config tree and
 // replace config values with the envrionment key configured in env-map.yml
 traverse(config, (key, value, trail) => {
-  let env_key = Object.resolve(trail, env_map);
+  // concat pushes values passed in and returns a new array
+  path = trail.concat(key);
+  let env_key = Object.resolve(path, env_map);
   let env_value = process.env[env_key];
   if (typeof env_value === "undefined")
     return;
 
-  Object.setByPath(trail, config, env_value);
+  Object.setByPath(path, config, env_value);
 })
