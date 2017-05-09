@@ -18,7 +18,7 @@ var swaggerSpec = swaggerJSDoc({
       version: '1.0.0', // Version (required)
     },
   },
-  apis: ['./src/api.js'], // Path to the API docs
+  apis: ['./src/*.js'], // Path to the API docs
 });
 
 app.use(logger('dev'));

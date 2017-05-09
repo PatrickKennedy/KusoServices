@@ -1,4 +1,4 @@
-var debug = require('debug')('kuso:api')
+let debug = require('debug')('kuso:api')
   , express = require('express')
   , router = express.Router()
 
@@ -18,7 +18,7 @@ router
 
   /**
    * @swagger
-   * /upcoming:
+   * /api/v1/upcoming:
    *  get:
    *    description: Return a list of races for the next upcoming event
    *    produces:
@@ -37,7 +37,7 @@ router
 
   /**
    * @swagger
-   * /past:
+   * /api/v1/past:
    *  get:
    *    description: Return a list of races for all past events
    *    produces:
