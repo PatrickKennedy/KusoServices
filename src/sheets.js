@@ -39,21 +39,25 @@ exports.get_daily_schedule = (auth, book, range) => {
       }
 
       response.values.forEach((row) => {
+        // if the row is empty we're between event groupings
         if (!row.length) {
           events.push(event);
           event = undefined;
           return;
         }
 
+        // if event is undefined we've just entered an event grouping
         if (typeof event === "undefined")
           return event = {
             date: moment(row[0], config.schedule.date_format),
             races: [],
           };
 
+        // the first cell of the header row will be "Time"
         if (row[0] === "Time")
           return;
 
+        // if the row doesn't fall into any of those categories it's a race row
         let race = {
           start_time: moment.tz(
             row[0],
@@ -75,6 +79,11 @@ exports.get_daily_schedule = (auth, book, range) => {
         if (race.racer_1 && race.racer_2)
           event.races.push(race);
       });
+
+      // because the Sheets API is smart enough to know the last line with
+      // content is the end of the sheet we need to manually add the last event
+      if (typeof event !== "undefined" && event.races.length)
+        events.push(event);
 
       resolve(events);
     });
