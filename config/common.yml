@@ -4,7 +4,9 @@ express:
 schedule:
   sheet_id: ~
   book: ~
-  date_format: MMM Do
+  date_format:
+    - MMM Do
+    - ddd MMM Do
   time_format: h:ma
   timezone: America/New_York
 
